@@ -38,22 +38,9 @@ void setup() {
   right_front_feet.attach(13);
 
   Serial.begin(9600);
-}
 
-
-void span_leg_poses(){
-  for(int pos = 0; pos <= 180; pos++){
-    left_back_upper.write(pos);
-    left_back_lower.write(pos);
-    set_constrained_feet_pos(pos, left_back_feet);
-    delay(10);
-  };
-  for(int pos = 180; pos >= 0; pos--){
-    left_back_upper.write(pos);
-    left_back_lower.write(pos);
-    set_constrained_feet_pos(pos, left_back_feet);
-    delay(10);
-  };
+  set_aestetic_pose();
+  delay(100);
 }
 
 
@@ -112,8 +99,16 @@ void set_aestetic_pose(){
 
 void loop() {
     //set_default_pose();
-    set_aestetic_pose();
-    delay(1000);
+    // set_aestetic_pose();
+    // delay(1000);
+
+  if (Serial.available() > 0) {
+    int angle = Serial.parseInt();  // Read angle from serial input
+    right_front_lower.write(angle);         // Move servo to the specified angle
+    Serial.print("Servo moved to: ");
+    Serial.println(angle);
+  }
+
 }
 
 

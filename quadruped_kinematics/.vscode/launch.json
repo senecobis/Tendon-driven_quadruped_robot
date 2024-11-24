@@ -1,0 +1,16 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "test",
+            "type": "debugpy",
+            "cwd": "/Users/PELLERITO/Documents/Progetti/Tendon-driven_quadrupedal_robot/Tendon-driven_quadruped_robot/quadruped_kinematics/quadruped_kinematics",
+            "request": "launch",
+            "program": "test.py",
+            "console": "integratedTerminal"
+        }
+    ]
+}

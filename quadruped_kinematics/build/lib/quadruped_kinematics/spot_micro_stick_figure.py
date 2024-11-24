@@ -2,8 +2,8 @@ import math
 from math import pi, sin, cos
 import matplotlib.pyplot as plt
 import numpy as np
-from ..utilities import spot_micro_kinematics as smk
-from ..utilities import transformations
+from .utilities import spot_micro_kinematics as smk
+from .utilities import transformations
 
 d2r = pi/180
 r2d = 180/pi
@@ -231,6 +231,7 @@ class SpotMicroStickFigure(object):
                                                      self.hip_length,self.upper_leg_length,self.lower_leg_length,
                                                      smk.t_leftback(self.ht_body,self.body_length,self.body_width),leg12=False) 
 
+
     def get_leg_coordinates(self):
         '''Return coordinates of each leg as a tuple of 4 sets of 4 leg points'''
         
@@ -238,6 +239,7 @@ class SpotMicroStickFigure(object):
                 self.legs['leg_rightfront'].get_leg_points(),
                 self.legs['leg_leftfront'].get_leg_points(),
                 self.legs['leg_leftback'].get_leg_points())
+
 
     def set_leg_angles(self,leg_angs):
         ''' Set the leg angles for all four legs
@@ -289,6 +291,7 @@ class SpotMicroStickFigure(object):
             z4 = foot_coords_dict[leg_name][2]
             self.legs[leg_name].set_foot_position_in_global_coords(x4,y4,z4)
 
+
     def set_absolute_body_pose(self, ht_body):
         '''Set absolute pose of body, while holding foot positions in place'''
         
@@ -315,6 +318,7 @@ class SpotMicroStickFigure(object):
 
         self.set_absolute_foot_coordinates(foot_coords_matrix)
 
+
     def set_body_angles(self,phi=0,theta=0,psi=0):
         '''Set a body angles without translation of the body
 
@@ -336,6 +340,7 @@ class SpotMicroStickFigure(object):
         # Call method to set absolute body pose
         self.set_absolute_body_pose(ht_body)
 
+
     def get_leg_angles(self):
         ''' Get the leg angles for all four legs
         Args:
@@ -356,5 +361,5 @@ class SpotMicroStickFigure(object):
 
 
     def print_leg_angles(self):
-        ''' Print the joint angles for alll four legs'''
+        ''' Print the joint angles for all four legs'''
         return None
