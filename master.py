@@ -4,14 +4,14 @@ import serial.tools.list_ports as ports_
 import time
 
 
-def check_com(com):
-    ports = list(prt.name for prt in ports_.comports())
+def find_com_port():
+    ports = list(prt.device for prt in ports_.comports())
     print(f"Available COM ports:{ports}")
-    if com in ports and "cu" in com:
-        return com
-    else:
-        print(f"Invalid COM port, COM available are:{ports}")
-        raise ValueError("Invalid COM port")
+    for port in ports:
+        if "usbmodem" in port:
+            return port
+    print(f"NO usbmodem port found, COM available are:{ports}")
+    raise ValueError("Invalid COM port")
     
     
 def set_servo_angle(angle):
@@ -31,30 +31,35 @@ def set_joints_angles(angles: list):
     response = arduino.readline().decode().strip()  # Read Arduino's response
     print(response)
 
+if __name__ == "__main__":    
+    com = find_com_port()
+    arduino = serial.Serial(port=com, baudrate=9600)
+    
+    continue_ = True
+    while arduino.isOpen() and continue_:
+        time.sleep(2) # Wait for connection to happen
 
-com = "/dev/cu.usbmodem11101"
-arduino = serial.Serial(port=com, baudrate=9600)
-time.sleep(2) # Wait for connection to happen
+        #   left_back_upper.write(80);
+        #   left_back_lower.write(110);
+        #   set_constrained_feet_pos(30, left_back_feet);
 
-# set_joints_angles([90, 90, 90, 90, 90, 90])
+        #   right_back_upper.write(100);
+        #   right_back_lower.write(70);
+        #   set_constrained_feet_pos(60, right_back_feet);
 
+        #   left_front_upper.write(90);
+        #   left_front_lower.write(50);
+        #   set_constrained_feet_pos(60, left_front_feet);
 
-#   left_back_upper.write(80);
-#   left_back_lower.write(110);
-#   set_constrained_feet_pos(30, left_back_feet);
+        #   right_front_upper.write(90);
+        #   right_front_lower.write(130);
+        #   set_constrained_feet_pos(30, right_front_feet);
 
-#   right_back_upper.write(100);
-#   right_back_lower.write(70);
-#   set_constrained_feet_pos(60, right_back_feet);
+        # set_joints_angles([80, 110, 30, 100, 70, 60, 90, 50, 60, 90, 130, 30])
+        set_joints_angles([60, 90, 10, 100, 70, 60, 90, 50, 60, 90, 130, 30])
+        
+        req = input("Do you want to continue? (y/n)")
+        if req.lower() == 'n':
+            continue_ = False
 
-#   left_front_upper.write(90);
-#   left_front_lower.write(50);
-#   set_constrained_feet_pos(60, left_front_feet);
-
-#   right_front_upper.write(90);
-#   right_front_lower.write(130);
-#   set_constrained_feet_pos(30, right_front_feet);
-
-set_joints_angles([80, 110, 30, 100, 70, 60, 90, 50, 60, 90, 130, 30])
-
-arduino.close()  # Close the serial connection
+    arduino.close()  # Close the serial connection

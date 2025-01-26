@@ -151,32 +151,39 @@ void loop() {
   //   Serial.println(angle);
   // }
 
-  if (Serial.available() > 0) {
+ if (Serial.available() > 0) {
     String input = Serial.readStringUntil('\n');
     int jointPositions[12];  // Adjust array size based on your needs
     
-    int index = 12;
+    int index = 0; // Start at 0
     char* token = strtok(&input[0], ",");
-    while (token != NULL && index < 3) {
-      jointPositions[index++] = atoi(token);
-      token = strtok(NULL, ",");
+    while (token != NULL && index < 12) { // Change condition to index < 12
+        jointPositions[index++] = atoi(token);
+        token = strtok(NULL, ",");
     }
 
     String result = "";
-    for (int i = 0; i <= 12; i++) {
-      result += String(jointPositions[i]);
+    for (int i = 0; i < index; i++) { // Loop through only valid indices
+        result += String(jointPositions[i]) + ",";
     }
-    Serial.print("moving to" + result);
+    
+    Serial.print("Moving to: " + String(result));
 
-    for (int i = 0; i < index; i++) {
-      servos[i].write(jointPositions[i]);
-      const char* servo_name = servos_name[i];
-      Serial.print("Servo ");
-      Serial.print(servo_name);
-      Serial.print(" moved to: ");
-      Serial.println(jointPositions[i]);
-    }
-  }
+    servos[0].write(jointPositions[0]);
+    servos[1].write(jointPositions[1]);
+    servos[2].write(jointPositions[2]);
+    servos[3].write(jointPositions[3]);
+    servos[4].write(jointPositions[4]);
+    servos[5].write(jointPositions[5]);
+    servos[6].write(jointPositions[6]);
+    servos[7].write(jointPositions[7]);
+    servos[8].write(jointPositions[8]);
+    servos[9].write(jointPositions[9]);
+    servos[10].write(jointPositions[10]);
+    servos[11].write(jointPositions[11]);
+
+    Serial.print("Moved all joints with index");
+}
 
 }
 
