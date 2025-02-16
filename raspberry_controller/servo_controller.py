@@ -32,21 +32,21 @@ class ServoController:
 
     def set_aestetic_pose(self):
         # just aestetic static pose for photos
-        self.left_back_upper.angle = 80
-        self.left_back_lower.angle = 140
-        self.set_constrained_feet_pos(0, self.left_back_feet)
+        self.left_back_upper.angle = 90
+        self.left_back_lower.angle = (180 -40)
+        self.set_constrained_feet_pos(45, self.left_back_feet)
 
         self.right_back_upper.angle = 90
         self.right_back_lower.angle = 40
-        self.set_constrained_feet_pos(50, self.right_back_feet)
+        self.set_constrained_feet_pos(45, self.right_back_feet)
 
         self.left_front_upper.angle = 90
-        self.left_front_lower.angle = 140
-        self.set_constrained_feet_pos(10, self.left_front_feet)
+        self.left_front_lower.angle = (180 - 40)
+        self.set_constrained_feet_pos(45, self.left_front_feet)
 
-        self.right_front_upper.angle = 90
-        self.right_front_lower.angle = 30
-        self.set_constrained_feet_pos(50, self.right_front_feet)
+        self.right_front_upper.angle = 100
+        self.right_front_lower.angle = 40
+        self.set_constrained_feet_pos(45, self.right_front_feet)
 
 
     def standup(self):
