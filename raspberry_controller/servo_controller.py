@@ -67,7 +67,48 @@ class ServoController:
         self.right_front_lower.angle = 90
         self.set_constrained_feet_pos(0, self.right_front_feet)
 
+    def sitdown(self):
+        # sitdown pose
+        self.left_back_upper.angle = 90
+        self.left_back_lower.angle = 90
+        self.set_constrained_feet_pos(90, self.left_back_feet)
+
+        self.right_back_upper.angle = 90
+        self.right_back_lower.angle = 90 # with 0 is not aligned with the other
+        self.set_constrained_feet_pos(90, self.right_back_feet)
+
+        self.left_front_upper.angle = 90
+        self.left_front_lower.angle = 90
+        self.set_constrained_feet_pos(90, self.left_front_feet)
+
+        self.right_front_upper.angle = 90
+        self.right_front_lower.angle = 90
+        self.set_constrained_feet_pos(90, self.right_front_feet)
+
+    
+    def set_angles(self, lb, rb, lf, rf):
+        lbu, lbl, lbf = lb
+        rbu, rbl, rbf = rb
+        lfu, lfl, lff = lf
+        rfu, rfl, rff = rf
+        
+        self.left_back_upper.angle = lbu
+        self.left_back_lower.angle = lbl
+        self.set_constrained_feet_pos(lbf, self.left_back_feet)
+
+        self.right_back_upper.angle = rbu
+        self.right_back_lower.angle = rbl
+        self.set_constrained_feet_pos(rbf, self.right_back_feet)
+
+        self.left_front_upper.angle = lfu
+        self.left_front_lower.angle = lfl
+        self.set_constrained_feet_pos(lff, self.left_front_feet)
+
+        self.right_front_upper.angle = rfu
+        self.right_front_lower.angle = rfl
+        self.set_constrained_feet_pos(rff, self.right_front_feet)
         
 if __name__ == "__main__":
     controller = ServoController()
-    controller.set_aestetic_pose()
+    # controller.set_aestetic_pose()
+    controller.sitdown()

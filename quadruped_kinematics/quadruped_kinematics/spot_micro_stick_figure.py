@@ -1,7 +1,7 @@
 from math import pi
 import numpy as np
-from utilities import spot_micro_kinematics as smk
-from utilities import transformations
+from quadruped_kinematics.utilities import spot_micro_kinematics as smk
+from quadruped_kinematics.utilities import transformations
 
 d2r = pi/180
 r2d = 180/pi
@@ -182,7 +182,7 @@ class SpotMicroStickFigure(object):
     """
     def __init__(self,x=0,y=.18,z=0,phi=0,theta=0,psi=0):
         '''constructor'''
-        self.hip_length = 0.055
+        self.hip_length = 0.055 # in meters
         self.upper_leg_length = 0.1075
         self.lower_leg_length = 0.130
         self.body_width = 0.078
@@ -203,11 +203,11 @@ class SpotMicroStickFigure(object):
         # self.ht_body = transformations.homog_transxyz(self.x,self.y,self.z) @ transformations.homog_rotxyz(self.phi,self.psi,self.theta)
         self.ht_body = np.matmul(transformations.homog_transxyz(self.x,self.y,self.z), transformations.homog_rotxyz(self.phi,self.psi,self.theta))
         
-        # Intialize all leg angles to 0, 30, 30 degrees
-        self.rb_leg_angles   = [0,-30*d2r,60*d2r]
-        self.rf_leg_angles   = [0,-30*d2r,60*d2r]
-        self.lf_leg_angles   = [0,30*d2r,-60*d2r]
-        self.lb_leg_angles   = [0,30*d2r,-60*d2r]
+        # Intialize all leg angles to 90, 90, 90 degrees
+        self.rb_leg_angles   = [90*d2r,90*d2r,90*d2r]
+        self.rf_leg_angles   = [90*d2r,90*d2r,90*d2r]
+        self.lf_leg_angles   = [90*d2r,90*d2r,90*d2r]
+        self.lb_leg_angles   = [90*d2r,90*d2r,90*d2r]
 
         # Create a dictionary to hold the legs of this spot micro object.
         # First initialize to empty dict
@@ -356,6 +356,27 @@ class SpotMicroStickFigure(object):
                     self.legs['leg_rightfront'].get_leg_angles(),
                     self.legs['leg_leftfront'].get_leg_angles(),
                     self.legs['leg_leftback'].get_leg_angles()     )
+    
+    
+    def get_leg_angles_deg(self):
+        ''' Get the leg angles for all four legs
+        Args:
+            None
+        Returns:
+            leg_angs: Tuple of 4 of the leg angles. Legs in the order rightback
+                      rightfront, leftfront, leftback. Angles in the order q1,q2,q3.
+                      An example output:
+                        ((rb_q1,rb_q2,rb_q3),
+                         (rf_q1,rf_q2,rf_q3),
+                         (lf_q1,lf_q2,lf_q3),
+                         (lb_q1,lb_q2,lb_q3))
+        '''
+        right_back = (np.array(self.legs['leg_rightback'].get_leg_angles())*r2d).tolist()
+        right_front = (np.array(self.legs['leg_rightfront'].get_leg_angles())*r2d).tolist()
+        left_front = (np.array(self.legs['leg_leftfront'].get_leg_angles())*r2d).tolist()
+        left_back = (np.array(self.legs['leg_leftback'].get_leg_angles())*r2d).tolist()
+
+        return left_back, right_back, left_front, right_front
 
 
     def print_leg_angles(self):
