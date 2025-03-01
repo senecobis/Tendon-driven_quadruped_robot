@@ -25,12 +25,15 @@ class SpotMicroLeg(object):
 
     def __init__(self,q1,q2,q3,l1,l2,l3,ht_leg_start,leg12):
         '''Constructor'''
+        # q1, q2, q3 are the starting position of the leg
         self._q1 = q1
         self._q2 = q2
         self._q3 = q3
+        # l are the len of the various section of the leg
         self._l1 = l1
         self._l2 = l2
         self._l3 = l3
+        # ht is the start transformation of the leg
         self._ht_leg_start = ht_leg_start
         self._leg12 = leg12
 
@@ -146,6 +149,7 @@ class SpotMicroLeg(object):
         return (self._q1,self._q2,self._q3)
 
 
+
 class SpotMicroStickFigure(object):
     """Encapsulates an 12 DOF spot micro stick figure  
 
@@ -182,11 +186,18 @@ class SpotMicroStickFigure(object):
     """
     def __init__(self,x=0,y=.18,z=0,phi=0,theta=0,psi=0):
         '''constructor'''
-        self.hip_length = 0.055 # in meters
-        self.upper_leg_length = 0.1075
-        self.lower_leg_length = 0.130
-        self.body_width = 0.078
-        self.body_length = 0.186
+        # self.hip_length = 0.055 # in meters
+        # self.upper_leg_length = 0.1075
+        # self.lower_leg_length = 0.130
+        # self.body_width = 0.078
+        # self.body_length = 0.186
+        
+        # Values based on my Tendon Driven Quadruped
+        self.body_length = 0.25
+        self.body_width = 0.14
+        self.hip_length = 0.035
+        self.upper_leg_length = 0.150
+        self.lower_leg_length = 0.165
 
         self.x = x
         self.y = y
@@ -204,10 +215,17 @@ class SpotMicroStickFigure(object):
         self.ht_body = np.matmul(transformations.homog_transxyz(self.x,self.y,self.z), transformations.homog_rotxyz(self.phi,self.psi,self.theta))
         
         # Intialize all leg angles to 90, 90, 90 degrees
+        # This is the zero pose where the robot should start
         self.rb_leg_angles   = [90*d2r,90*d2r,90*d2r]
         self.rf_leg_angles   = [90*d2r,90*d2r,90*d2r]
         self.lf_leg_angles   = [90*d2r,90*d2r,90*d2r]
         self.lb_leg_angles   = [90*d2r,90*d2r,90*d2r]
+        
+        # set initial pose of each leg
+        ht_leg_start_rb = smk.t_rightback(self.ht_body,self.body_length,self.body_width)
+        ht_leg_start_rf = smk.t_rightfront(self.ht_body,self.body_length,self.body_width)
+        ht_leg_start_lf = smk.t_leftfront(self.ht_body,self.body_length,self.body_width)
+        ht_leg_start_lb = smk.t_leftback(self.ht_body,self.body_length,self.body_width)
 
         # Create a dictionary to hold the legs of this spot micro object.
         # First initialize to empty dict
@@ -215,19 +233,19 @@ class SpotMicroStickFigure(object):
 
         self.legs['leg_rightback'] =     SpotMicroLeg(self.rb_leg_angles[0],self.rb_leg_angles[1],self.rb_leg_angles[2],
                                                      self.hip_length,self.upper_leg_length,self.lower_leg_length,
-                                                     smk.t_rightback(self.ht_body,self.body_length,self.body_width),leg12=True) 
+                                                     ht_leg_start=ht_leg_start_rb,leg12=True) 
         
         self.legs['leg_rightfront'] =   SpotMicroLeg(self.rf_leg_angles[0],self.rf_leg_angles[1],self.rf_leg_angles[2],
                                                      self.hip_length,self.upper_leg_length,self.lower_leg_length,
-                                                     smk.t_rightfront(self.ht_body,self.body_length,self.body_width),leg12=True)
+                                                     ht_leg_start=ht_leg_start_rf,leg12=True)
                                                   
         self.legs['leg_leftfront'] =    SpotMicroLeg(self.lf_leg_angles[0],self.lf_leg_angles[1],self.lf_leg_angles[2],
                                                      self.hip_length,self.upper_leg_length,self.lower_leg_length,
-                                                     smk.t_leftfront(self.ht_body,self.body_length,self.body_width),leg12=False)
+                                                     ht_leg_start=ht_leg_start_lf,leg12=False)
 
         self.legs['leg_leftback'] =     SpotMicroLeg(self.lb_leg_angles[0],self.lb_leg_angles[1],self.lb_leg_angles[2],
                                                      self.hip_length,self.upper_leg_length,self.lower_leg_length,
-                                                     smk.t_leftback(self.ht_body,self.body_length,self.body_width),leg12=False) 
+                                                     ht_leg_start=ht_leg_start_lb,leg12=False) 
 
 
     def get_leg_coordinates(self):
