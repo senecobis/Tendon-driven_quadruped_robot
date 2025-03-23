@@ -71,7 +71,7 @@ class ServoController:
         # sitdown pose
         self.left_back_upper.angle = 90
         self.left_back_lower.angle = 90
-        self.set_constrained_feet_pos(90, self.left_back_feet)
+        self.set_constrained_feet_pos(0, self.left_back_feet)
 
         self.right_back_upper.angle = 90
         self.right_back_lower.angle = 90 # with 0 is not aligned with the other
@@ -79,7 +79,7 @@ class ServoController:
 
         self.left_front_upper.angle = 90
         self.left_front_lower.angle = 90
-        self.set_constrained_feet_pos(90, self.left_front_feet)
+        self.set_constrained_feet_pos(0, self.left_front_feet)
 
         self.right_front_upper.angle = 90
         self.right_front_lower.angle = 90
