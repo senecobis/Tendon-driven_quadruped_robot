@@ -17,6 +17,30 @@ class ServoController:
         self.right_front_upper = kit.servo[9]
         self.right_front_lower = kit.servo[10]
         self.right_front_feet = kit.servo[11]
+        
+    def move_lower_left(self, q1, q2, q3):
+        # move the left back leg
+        self.left_back_upper.angle = q1
+        self.left_back_lower.angle = q2
+        self.set_constrained_feet_pos(q3, self.left_back_feet)
+        
+    def move_lower_right(self, q1, q2, q3):
+        # move the right back leg
+        self.right_back_upper.angle = q1
+        self.right_back_lower.angle = q2
+        self.set_constrained_feet_pos(q3, self.right_back_feet)
+        
+    def move_front_left(self, q1, q2, q3):
+        # move the left front leg
+        self.left_front_upper.angle = q1
+        self.left_front_lower.angle = q2
+        self.set_constrained_feet_pos(q3, self.left_front_feet)
+        
+    def move_front_right(self, q1, q2, q3):
+        # move the right front leg
+        self.right_front_upper.angle = q1
+        self.right_front_lower.angle = q2
+        self.set_constrained_feet_pos(q3, self.right_front_feet)
 
     @staticmethod
     def set_constrained_feet_pos(pos: int, feet_: ServoKit):
@@ -28,7 +52,6 @@ class ServoController:
             pos = 90
 
         feet_.angle = pos
-
 
     def set_aestetic_pose(self):
         # just aestetic static pose for photos

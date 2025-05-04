@@ -203,7 +203,7 @@ class SpotMicroStickFigure(object):
         # self.ht_body = transformations.homog_transxyz(self.x,self.y,self.z) @ transformations.homog_rotxyz(self.phi,self.psi,self.theta)
         self.ht_body = np.matmul(transformations.homog_transxyz(self.x,self.y,self.z), transformations.homog_rotxyz(self.phi,self.psi,self.theta))
         
-        # Intialize all leg angles to 0, 30, 30 degrees
+        # Intialize all leg angles to 90, 90, 90 degrees
         self.rb_leg_angles   = [90*d2r,90*d2r,90*d2r]
         self.rf_leg_angles   = [90*d2r,90*d2r,90*d2r]
         self.lf_leg_angles   = [90*d2r,90*d2r,90*d2r]
@@ -356,6 +356,7 @@ class SpotMicroStickFigure(object):
                     self.legs['leg_rightfront'].get_leg_angles(),
                     self.legs['leg_leftfront'].get_leg_angles(),
                     self.legs['leg_leftback'].get_leg_angles()     )
+    
     
     def get_leg_angles_deg(self):
         ''' Get the leg angles for all four legs
