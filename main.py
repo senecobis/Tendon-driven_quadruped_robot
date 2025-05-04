@@ -28,9 +28,6 @@ def postprocess_angles(angles):
 if __name__ == "__main__":
     controller = ServoController()
     leg = Leg(l1, l2, l3)
-    # angles = leg.ik_pos(0, -l2-l3, l1-0.1*l1)
-    # angles_ = postprocess_angles(angles)
-    # controller.move_front_left(angles_[0], angles_[1], angles_[2])
     
     line = list(np.linspace(0, 10, 100))
     for i in line:
