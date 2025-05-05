@@ -21,7 +21,7 @@ def t_0_to_1(q1,l1):
     # NOTE since by q1 definition it starts from 90 deg we subtract 90 deg
     # q1 = q1 - pi/2
     t_01 = np.block(
-        [ [ transformations.rotz(q1), np.array([[0],[0],[l1]]) ],
+        [ [ transformations.rotz(q1), np.array([[0],[0],[-l1]]) ],
                                     [np.array([0,0,0,1])] 
         ]    
         )
