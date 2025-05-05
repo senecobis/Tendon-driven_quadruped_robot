@@ -18,7 +18,7 @@ def t_0_to_1(q1,l1):
     Returns:
         A 4x4 numpy matrix. Homogeneous transform from joint 0 to 1
     '''
-    # NOTE since by q1 definition it starts from 90 deg we subtract 90 deg
+    # NOTE since by q1 definition it starts from 90 deg we subtract/add 90 deg
     # q1 = q1 - pi/2
     t_01 = np.block(
         [ [ transformations.rotz(q1), np.array([[0],[0],[-l1]]) ],
@@ -37,7 +37,7 @@ def t_1_to_2(q2, l2):
         A 4x4 numpy matrix. Homogeneous transform from joint 1 to 2
     '''
     t_12 = np.block(
-        [ [ transformations.rotx(q2), np.array([[0],[l2*cos(q2)],[-l2*sin(q2)]]) ],
+        [ [ transformations.rotx(q2), np.array([[0],[-l2*cos(q2)],[-l2*sin(q2)]]) ],
                                     [np.array([0,0,0,1])] 
         ]    
         )
@@ -53,9 +53,8 @@ def t_2_to_3(q3, l3):
     Returns:
         A 4x4 numpy matrix. Homogeneous transform from joint 2 to 3
     '''
-
     t_23 = np.block(
-        [ [ transformations.rotx(q3), np.array([[0],[l3*sin(q3)],[-l3*cos(q3)]]) ],
+        [ [ transformations.rotx(q3), np.array([[0],[-l3*cos(q3)],[l3*sin(q3)]]) ],
                                     [np.array([0,0,0,1])] 
         ]    
         )
@@ -68,7 +67,10 @@ def t_0_to_3(q1, q2, q3, l1, l2, l3):
     return np.matmul(np.matmul(t_0_to_1(q1,l1), t_1_to_2(q2,l2)), t_2_to_3(q3,l3))
 
 class Leg():
-    def __init__(self, l1, l2, l3):
+    def __init__(self, l1, l2, l3, 
+                 slack_q1=0, slack_q2=0, slack_q3=0, 
+                 clockwise_q1=False, clockwise_q2=False, clockwise_q3=False
+                 ):
         self.l1 = l1
         self.l2 = l2
         self.l3 = l3
@@ -77,16 +79,45 @@ class Leg():
         self.q2_guess = 0
         self.q3_guess = 0
         
+        # slack angles are the angles at which the leg is assembled
+        self.slack_q1 = slack_q1
+        self.slack_q2 = slack_q2
+        self.slack_q3 = slack_q3
+        
+        # clockwise angles are the directions of the joints
+        # if True the joint rotates clockwise
+        self.clockwise_q1 = clockwise_q1
+        self.clockwise_q2 = clockwise_q2
+        self.clockwise_q3 = clockwise_q3
+        
         self.angle_bounds = [(-2*np.pi, 2*np.pi)] * 3  # For theta1, theta2, theta3
         # self.angle_bounds = None
 
     def t_0_to_1(self, q1):
+        q1 = q1 + self.slack_q1
+        if self.clockwise_q1:
+            q1 = -q1
         return t_0_to_1(q1, self.l1)
     
     def t_0_to_2(self, q1, q2):
+        q1 = q1 + self.slack_q1
+        q2 = q2 + self.slack_q2
+        if self.clockwise_q1:
+            q1 = -q1
+        if self.clockwise_q2:
+            q2 = -q2
         return t_0_to_2(q1, q2, self.l1, self.l2)
     
     def t_0_to_3(self, q1, q2, q3):
+        q1 = q1 + self.slack_q1
+        q2 = q2 + self.slack_q2
+        q3 = q3 + self.slack_q3
+        if self.clockwise_q1:
+            q1 = -q1
+        if self.clockwise_q2:
+            q2 = -q2
+        if self.clockwise_q3:
+            q3 = -q3
         return t_0_to_3(q1, q2, q3, self.l1, self.l2, self.l3)
     
     def ik_cost(self, q, T_target):
