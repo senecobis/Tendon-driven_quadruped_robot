@@ -8,7 +8,7 @@ import numpy as np
 d2r = pi/180
 r2d = 180/pi
 
-def t_0_to_1(q1,l1):
+def t_0_to_1(q1,l1, front_leg=False):
     '''Create the homogeneous transformation matrix for joint 0 to 1 for a quadriped leg.
 
     Args:
@@ -20,8 +20,12 @@ def t_0_to_1(q1,l1):
     '''
     # NOTE since by q1 definition it starts from 90 deg we subtract/add 90 deg
     # q1 = q1 - pi/2
+    if front_leg:
+        len1 = l1
+    else:
+        len1 = -l1
     t_01 = np.block(
-        [ [ transformations.rotz(q1), np.array([[0],[0],[-l1]]) ],
+        [ [ transformations.rotz(q1), np.array([[0],[0],[len1]]) ],
                                     [np.array([0,0,0,1])] 
         ]    
         )
@@ -63,14 +67,15 @@ def t_2_to_3(q3, l3):
 def t_0_to_2(q1, q2, l1, l2):
     return np.matmul(t_0_to_1(q1,l1), t_1_to_2(q2,l2))
 
-def t_0_to_3(q1, q2, q3, l1, l2, l3):
-    return np.matmul(np.matmul(t_0_to_1(q1,l1), t_1_to_2(q2,l2)), t_2_to_3(q3,l3))
+def t_0_to_3(q1, q2, q3, l1, l2, l3, front_leg=False):
+    return np.matmul(np.matmul(t_0_to_1(q1,l1, front_leg), t_1_to_2(q2,l2)), t_2_to_3(q3,l3))
 
 class Leg():
     def __init__(self, l1, l2, l3, 
                  slack_q1=0, slack_q2=0, slack_q3=0, 
-                 clockwise_q1=False, clockwise_q2=False, clockwise_q3=False
-                 ):
+                 clockwise_q1=False, clockwise_q2=False, clockwise_q3=False,
+                front_leg=False
+                ):
         self.l1 = l1
         self.l2 = l2
         self.l3 = l3
@@ -90,23 +95,10 @@ class Leg():
         self.clockwise_q2 = clockwise_q2
         self.clockwise_q3 = clockwise_q3
         
+        self.front_leg = front_leg
+        
         self.angle_bounds = [(-2*np.pi, 2*np.pi)] * 3  # For theta1, theta2, theta3
         # self.angle_bounds = None
-
-    def t_0_to_1(self, q1):
-        q1 = q1 + self.slack_q1
-        if self.clockwise_q1:
-            q1 = -q1
-        return t_0_to_1(q1, self.l1)
-    
-    def t_0_to_2(self, q1, q2):
-        q1 = q1 + self.slack_q1
-        q2 = q2 + self.slack_q2
-        if self.clockwise_q1:
-            q1 = -q1
-        if self.clockwise_q2:
-            q2 = -q2
-        return t_0_to_2(q1, q2, self.l1, self.l2)
     
     def t_0_to_3(self, q1, q2, q3):
         q1 = q1 + self.slack_q1
@@ -118,7 +110,7 @@ class Leg():
             q2 = -q2
         if self.clockwise_q3:
             q3 = -q3
-        return t_0_to_3(q1, q2, q3, self.l1, self.l2, self.l3)
+        return t_0_to_3(q1, q2, q3, self.l1, self.l2, self.l3, front_leg=self.front_leg)
     
     def ik_cost(self, q, T_target):
         # Inverse kinematics cost function

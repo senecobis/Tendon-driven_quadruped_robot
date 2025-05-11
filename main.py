@@ -131,10 +131,7 @@ def test_lower_left_leg_(x_start=0, y_start=-l2-l3, z_start=-l1):
 def test_front_left_leg(x_start=0, y_start=-l2-l3, z_start=-l1):
     # Test the front left leg
     controller = ServoController()
-    leg = Leg(l1, l2, l3, 
-              slack_q1=-np.pi/2, slack_q2=-np.pi, slack_q3=-np.pi/2,
-              clockwise_q1=False, clockwise_q2=True, clockwise_q3=False
-              )
+    leg_kine = LegKinematics(l1, l2, l3)
     
     line = list(np.linspace(0, l1, 100))    
     for i in line:
@@ -142,8 +139,7 @@ def test_front_left_leg(x_start=0, y_start=-l2-l3, z_start=-l1):
         x = x_start
         y = y_start + i*l3/l2
         z = z_start + i*20
-        angles = leg.ik_pos(x, y, z)
-        angles = remap_angles_left(angles)
+        angles = leg_kine.front_left_angles(x, y, z)
         controller.move_front_left(angles[0], angles[1], angles[2])
         print(angles)
 
@@ -152,7 +148,7 @@ if __name__ == "__main__":
     # test_lower_right_leg()
     # test_right_legs()
     # test_lower_left_leg_()
-    test_front_left_leg()
+    # test_front_left_leg()
     
     
     

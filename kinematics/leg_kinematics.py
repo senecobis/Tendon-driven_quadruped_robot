@@ -16,11 +16,13 @@ class LegKinematics:
                             )
         self.front_right = Leg(l1, l2, l3,
                             slack_q1=-np.pi/2, slack_q2=0, slack_q3=0,
-                            clockwise_q1=False, clockwise_q2=True, clockwise_q3=False
+                            clockwise_q1=False, clockwise_q2=True, clockwise_q3=False,
+                            front_leg=True
                             ) # V
         self.front_left = Leg(l1, l2, l3,
                             slack_q1=-np.pi/2, slack_q2=-np.pi, slack_q3=-np.pi/2,
-                            clockwise_q1=False, clockwise_q2=True, clockwise_q3=False
+                            clockwise_q1=False, clockwise_q2=True, clockwise_q3=False,
+                            front_leg=True
                             )
     @staticmethod
     def remap_angles_right(angles):
