@@ -25,6 +25,14 @@ def postprocess_angles_front_left(angles):
     postprocessed_angles[0] = postprocessed_angles[0] + 90
     return np.array(postprocessed_angles)
 
+def postprocess_angles_minimal(angles):
+    for ind in range(len(angles)):
+        if angles[ind] < 0:
+            angles[ind] *= -1
+        if angles[ind] >= 180:
+            angles[ind] -= 180
+
+    return angles
 
 if __name__ == "__main__":
     controller = ServoController()
@@ -33,18 +41,18 @@ if __name__ == "__main__":
               clockwise_q1=False, clockwise_q2=True, clockwise_q3=False
               )
     
-    line = list(np.linspace(0, 10, 100))    
+    line = list(np.linspace(0, l1, 100))    
     for i in line:
-        x = 0
-        # y = -l2-l3 +(l2+l3)*i
-        y = -l2-l3
-        z = 0 + i
-        angles = leg.ik_pos(x, y, z)
-        # angles_ = postprocess_angles_front_left(angles)
-        angles_ = angles
-        controller.move_front_right(angles_[0], angles_[1], angles_[2])
         time.sleep(0.1)
-        print(f"angles: {angles_}")
+        x = 0
+        # TODO debug why it doesn't rise the feet and it fails when we try to increase the 
+        # y coordinate
+        y = -l2-l3 + i*l3/l2
+        z = -l1 + i*20
+        angles = leg.ik_pos(x, y, z)
+        angles = postprocess_angles_minimal(angles)
+        controller.move_front_right(angles[0], angles[1], angles[2])
+        print(angles)
     
     
     

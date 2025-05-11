@@ -146,5 +146,20 @@ class Leg():
         self.q3_guess = angles[2]
         return (angles*r2d).astype(int)
     
+    def ik_z_cost(self, q, z_target):
+        T_est = self.t_0_to_3(q[0], q[1], q[2])
+        z_est = T_est[2, 3]
+        return (z_est - z_target)**2  # Squared error on z only
+    
+    def ik_z_only(self, z):
+        theta_guess = np.array([self.q1_guess, self.q2_guess, self.q3_guess])
+        result = minimize(self.ik_z_cost, theta_guess, args=(z,), bounds=self.angle_bounds)
+        angles = result.x
+
+        # Save for warm-starting future optimizations
+        self.q1_guess, self.q2_guess, self.q3_guess = angles
+        return (angles * r2d).astype(int)
+
+    
 if __name__ == "__main__":
     t_03 = t_0_to_3(q1=0, q2=0, q3=0, l1=0.1, l2=0.1, l3=0.1)
