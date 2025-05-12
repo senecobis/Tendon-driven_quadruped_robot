@@ -149,6 +149,12 @@ if __name__ == "__main__":
     # test_right_legs()
     # test_lower_left_leg_()
     # test_front_left_leg()
+    controller = ServoController()
+    controller.move_front_left(90,180,90)
+    controller.move_front_right(90,0,0)
+    controller.move_lower_left(90,180,90)
+    controller.move_lower_right(90,0,0)
+
     
     
     
